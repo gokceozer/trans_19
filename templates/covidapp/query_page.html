@@ -1,0 +1,64 @@
+{% extends "covidapp/base.html" %}
+{% block content %}
+{% load static %}
+
+
+<form class="form-horizontal" method="POST">
+    {% csrf_token %}
+    <div class="jumbotron">
+        <h4>Please enter only period if you would like to view to all patients who had visited the same location over the period.
+            <br>Add location and date interval if you want to specify for the query.<br><br>
+        </h4>
+        <div class="row spacer">
+            <div class="col-2">
+                <div class="input-group">
+                    {{ query_form.as_p }}       
+                </div>
+            </div> 
+            <button type="submit" class="btn btn-block btn-primary">Submit Query</button>
+        </div>   
+    </div>
+</form>
+
+
+
+
+
+<table>
+    
+    {% if return_dict %}
+
+        {% for key, location in return_dict.items %}
+
+            {% ifequal location  "done" %}
+        
+                <thead>
+                    <th>Patient Name</th>
+                    <th>Patient ID Number</th>
+                    <th>Location Name</th>
+                    <th>Date From</th>
+                    <th>Date To</th>
+                </thead>
+        
+            {% else %}
+
+                <tr>
+                    <td>{{ location.patient.name }}</td>
+                    <td>{{ location.patient.idn }}</td>
+                    <td>{{ location.location_name }}</td>
+                    <td>{{ location.date_from }}</td>
+                    <td>{{ location.date_to }}</td>
+                </tr>
+
+            {% endifequal %}
+
+
+        {% endfor %}
+
+    {% else %}
+            <h3>No matching result</h3>
+    {% endif %}
+
+</table>
+
+{% endblock %}

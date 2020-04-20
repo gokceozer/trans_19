@@ -7,4 +7,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('patient_new/', views.patient_new, name='patient_new'),
     re_path('patient/(?P<pk>\d+)', views.PatientDetailView.as_view(), name='patient_detail'),
+    path('query/', views.profile_search, name='query'),
 ]

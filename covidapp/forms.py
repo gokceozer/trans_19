@@ -43,3 +43,10 @@ LocationFormSet = modelformset_factory(
     },
 )
 
+
+class QueryForm(forms.Form):
+    period = forms.IntegerField()
+    location = forms.CharField(max_length=100, required = False)
+    date_from = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS, required = False)
+    date_to = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS, required = False)
+    
