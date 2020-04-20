@@ -1,0 +1,69 @@
+{% extends "covidapp/base.html" %}
+{% block content %}
+
+<div class="jumbotron">
+    <div class="container">
+
+    <div class="header">
+        <h2 class="posttitle loader">Details for patient {{ patient.name }} with identification number {{ patient.idn }}</h2>
+      </div>
+    
+
+   
+        <table>
+            <thead>
+                <th>Patient Name</th>
+                <th>Patient ID number</th>
+                <th>Date of Birth</th>
+                <th>Date of Case Confirmation</th>
+                <th>Case Number</th>
+            </thead>
+        
+            <tr>
+                <th>{{ patient.name }}</th>
+                <td>{{ patient.idn }}</td>
+                <td>{{ patient.date_of_birth }}</td>
+                <td>{{ patient.date_of_confirm }}</td>
+                <td>{{ patient.case_number }}</td>
+            </tr>
+        </table>
+    </div>
+    
+
+    <div class="shell">
+        <table>
+            <thead>
+                <th>Location</th>
+                <th>Address</th>
+                <th>X Coordinate</th>
+                <th>Y Coordinate</th>
+                <th>Date From</th>
+                <th>Date To</th>
+                <th>Details</th>
+                <th>Category</th>
+            </thead>
+            
+            {% for loc in patient.locations.all %}
+            <tr>
+                <th>{{ loc.location_name }}</th>
+                <td>{{ loc.address }}</td>
+                <td>{{ loc.grid_x }}</td>
+                <td>{{ loc.grid_y }}</td>
+                <td>{{ loc.date_from }}</td>
+                <td>{{ loc.date_to }}</td>
+                <td>{{ loc.details }}</td>
+                <td>{{ loc.category }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+  
+    
+
+    <button type="button" style="float: right;">Edit</button>
+</div>
+</div>
+
+    
+
+{% endblock %}

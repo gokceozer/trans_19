@@ -1,0 +1,36 @@
+{% extends "covidapp/base.html" %}
+{% block content %}
+
+    
+    
+
+    <div class="jumbotron">
+        
+        {% if patients %}
+        <h1>Patient List:</h1>
+        <table>
+            <thead>
+                <th>Patient Name</th>
+                <th>Patient ID number</th>
+                <th>Date of Birth</th>
+                <th>Date of Case Confirmation</th>
+                <th>Case Number</th>
+            </thead>
+        
+
+        {% for patient in patients %}
+        <tr>
+            <th><a href="{% url 'patient_detail' pk=patient.pk %}">{{patient.name}}</a></th>
+            <td>{{ patient.idn }}</td>
+            <td>{{ patient.date_of_birth }}</td>
+            <td>{{ patient.date_of_confirm }}</td>
+            <td>{{ patient.case_number }}</td>
+        </tr>
+        {% endfor %}
+
+        </table>
+        {% else %}
+            <p>NO PATIENT RECORDS FOUND!</p>
+        {% endif %}
+    </div>
+{% endblock %}

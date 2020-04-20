@@ -1,0 +1,38 @@
+{% extends "covidapp/base.html" %}
+{% block content %}
+{% load static %}
+
+<form class="form-horizontal" method="POST">
+    {% csrf_token %}
+    <div class="jumbotron">
+        <div class="row spacer">
+            <div class="col-2">
+                <div class="input-group">
+                    {{ patientForm.as_p }}       
+                </div>
+            </div> 
+        </div> 
+    {{ formset.management_form }}
+    {% for form in formset %}
+    <div class="row form-row spacer">
+        <div class="col-6">
+            <div class="input-group">
+                {{ form.as_p }}
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-success add-form-row">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+        
+    <div class="row spacer">
+        <div class="col-4 offset-2"></div>
+            <button type="submit" class="btn btn-block btn-primary">Create</button>
+        </div>
+    </div>
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="{% static "js/myjs.js" %}"></script>
+
+{% endblock %}
