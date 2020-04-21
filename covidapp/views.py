@@ -5,6 +5,7 @@ from django.views.generic import DetailView, ListView, FormView
 from . import forms
 from django.http import HttpResponseRedirect
 import datetime
+from collections import OrderedDict
 
 # Create your views here.
 def index(request):
@@ -40,11 +41,16 @@ def profile_search(request):
         query_form = QueryForm(request.POST)
         if query_form.is_valid():
             model=Location
-            #print(query_form.cleaned_data['period'])
+            period = query_form.cleaned_data['period']
+            loc_name = query_form.cleaned_data['location']
+            date_f = query_form.cleaned_data['date_from']
+            date_t = query_form.cleaned_data['date_to']
 
             entry_list = list(Location.objects.all())
-            return_dict = {}
-            counter = 0
+            #return_dict = {}
+            return_dict = OrderedDict()
+
+            counter = 1
             #print(len(entry_list))
             for i in range(len(entry_list)):
                 #print(f"i is {i}")
@@ -54,7 +60,7 @@ def profile_search(request):
                     '''print(type(entry_list[j].date_to))
                     print(entry_list[i].date_to)
                     print(entry_list[i].patient.name)'''
-                    if not (entry_list[i].date_from > entry_list[j].date_to + datetime.timedelta(days=2) or entry_list[i].date_to < entry_list[j].date_from - datetime.timedelta(days=2)) and entry_list[i].patient.idn != entry_list[j].patient.idn and entry_list[i].location_name == entry_list[j].location_name:
+                    if not (entry_list[i].date_from > entry_list[j].date_to + datetime.timedelta(days=period) or entry_list[i].date_to < entry_list[j].date_from - datetime.timedelta(days=period)) and entry_list[i].patient.idn != entry_list[j].patient.idn and entry_list[i].location_name == entry_list[j].location_name:
                         
                         if no_result:
                             return_dict[counter] = entry_list[i]
@@ -72,14 +78,25 @@ def profile_search(request):
 
                 return_dict[counter] = "done"
                 counter+=1
-                
-                
-                
+            
 
-            #print(return_dict)
+
+            if loc_name != "":
+                my_list = list(return_dict.items())          
+                for i in my_list:
+                    if i[1] != loc_name:
+                        my_list.remove(i)
+
+                        
+
+                
+                
+            if return_dict[next(reversed(return_dict))] == 'done':
+                return_dict.popitem()
+
+            print(return_dict)
             return render(request, 'covidapp/query_page.html',{'return_dict':return_dict, 'query_form':query_form})
                 
-            #return HttpResponseRedirect('/thanks/') 
     else:
         query_form = QueryForm()
 

@@ -28,10 +28,18 @@
     
     {% if return_dict %}
 
-        {% for key, location in return_dict.items %}
+        <thead>
+            <th>Patient Name</th>
+            <th>Patient ID Number</th>
+            <th>Location Name</th>
+            <th>Date From</th>
+            <th>Date To</th>
+        </thead>
 
+        {% for key, location in return_dict.items %}
+            
             {% ifequal location  "done" %}
-        
+                
                 <thead>
                     <th>Patient Name</th>
                     <th>Patient ID Number</th>
