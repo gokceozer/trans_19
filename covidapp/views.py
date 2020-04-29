@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from covidapp.forms import PatientForm, LocationFormSet, QueryForm
+from covidapp.forms import PatientForm, QueryForm, LocationForm #LocationFormSet
 from covidapp.models import Patient, Location
 from django.views.generic import DetailView, ListView, FormView, UpdateView, DeleteView
 from . import forms
@@ -17,21 +17,40 @@ def index(request):
 
 def patient_new(request):
     patientForm = PatientForm()
-    formset = LocationFormSet()
+    #formset = LocationFormSet()
     if request.method == "POST":
         patientForm = PatientForm(request.POST)
-        formset = LocationFormSet(request.POST) 
-        if patientForm.is_valid() and formset.is_valid():
-            patient = patientForm.save(commit=True)
+        #formset = LocationFormSet(request.POST) 
+        if patientForm.is_valid(): #and formset.is_valid():
+            patientForm.save(commit=True)
+            '''patient = patientForm.save(commit=True)
             for form in formset:
                 location = form.save(commit=False)
                 location.patient = patient
-                location.save()
+                location.save()'''
+            return index(request)
+        else:
+            print('ERROR FORM INVALID')
+#, 'formset':formset
+    return render(request, 'covidapp/patient_new.html',{'patientForm':patientForm})
+
+
+def location_new(request):
+    locationForm = LocationForm()
+
+    if request.method == "POST":
+
+        loc = LocationForm(request.POST) 
+        if loc.is_valid():
+            loc.save(commit=True)
+
             return index(request)
         else:
             print('ERROR FORM INVALID')
 
-    return render(request, 'covidapp/patient_new.html',{'patientForm':patientForm, 'formset':formset})
+    return render(request, 'covidapp/location_new.html',{'locationForm':locationForm})
+
+
 
 class PatientDetailView(DetailView):
     model=Patient

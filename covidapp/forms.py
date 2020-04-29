@@ -11,7 +11,7 @@ class PatientForm(forms.ModelForm):
         fields = '__all__'
 
 class LocationForm(forms.ModelForm):
-    date_from = forms.DateField(
+    '''date_from = forms.DateField(
         input_formats=['%d-%m-%Y'],
         widget=forms.DateInput(
             attrs={'class': 'date'},
@@ -25,23 +25,24 @@ class LocationForm(forms.ModelForm):
             attrs={'class': 'date'},
             format='%d-%m-%Y'
         )
-    )
+    )'''
     
     class Meta:
         model = Location
-        exclude = ('patient',)
+        #exclude = ('patient',)
+        fields=['location_name', 'address','district', 'grid_x','grid_y']
 
-LocationFormSet = modelformset_factory(
+'''LocationFormSet = modelformset_factory(
     Location,
     form=LocationForm,
     extra=1,
-    exclude = ('patient',),
-    #fields=('location_name','address','grid_x','grid_y','date_from','date_to','details','category'),
+    #exclude = ('patient',),
+    fields=('location_name','address','grid_x','grid_y','date_from','date_to','details','category'),
     widgets = {
     'date_from': forms.DateInput(format='%d-%m-%Y'),
     'date_to': forms.DateInput(format='%d-%m-%Y'),
     },
-)
+)'''
 
 
 class QueryForm(forms.Form):

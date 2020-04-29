@@ -16,13 +16,14 @@ class Patient(models.Model):
         return self.name
 
 class Location(models.Model):
-    patient = models.ForeignKey(Patient, related_name='locations', on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, related_name='locations', on_delete=models.CASCADE, null=True, blank=True)
     location_name = models.CharField(max_length=50, null=True, blank=True)
     address = models.CharField(max_length=300, null=True, blank=True)
-    grid_x = models.IntegerField(null=True)
-    grid_y = models.IntegerField(null=True)
-    date_from = models.DateField()
-    date_to = models.DateField()
+    district = models.CharField(max_length=300, null=True, blank=True)
+    grid_x = models.IntegerField(null=True, blank=True)
+    grid_y = models.IntegerField(null=True, blank=True)
+    date_from = models.DateField(null=True, blank=True)
+    date_to = models.DateField(null=True, blank=True)
     details = models.CharField(max_length=300, null=True, blank=True)
     category = models.CharField(max_length=300, null=True, blank=True)
 
