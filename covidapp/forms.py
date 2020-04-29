@@ -2,6 +2,7 @@ from django import forms
 from django.forms import modelformset_factory
 from covidapp.models import Patient, Location
 from trans19 import settings
+from crispy_forms.helper import FormHelper
 
 class PatientForm(forms.ModelForm):
     date_of_birth = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS)
@@ -9,6 +10,9 @@ class PatientForm(forms.ModelForm):
     class Meta:
         model = Patient
         fields = '__all__'
+        labels = {
+        "idn": "Identity Document Number"
+        }
 
 class LocationForm(forms.ModelForm):
     '''date_from = forms.DateField(
