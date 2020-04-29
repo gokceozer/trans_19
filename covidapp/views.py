@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from covidapp.forms import PatientForm, LocationFormSet, QueryForm
 from covidapp.models import Patient, Location
-from django.views.generic import DetailView, ListView, FormView
+from django.views.generic import DetailView, ListView, FormView, UpdateView, DeleteView
 from . import forms
 from django.http import HttpResponseRedirect
 import datetime
 from collections import OrderedDict
+from django.urls import reverse_lazy
 
 # Create your views here.
 def index(request):
@@ -60,7 +61,10 @@ def profile_search(request):
                     '''print(type(entry_list[j].date_to))
                     print(entry_list[i].date_to)
                     print(entry_list[i].patient.name)'''
-                    if not (entry_list[i].date_from > entry_list[j].date_to + datetime.timedelta(days=period) or entry_list[i].date_to < entry_list[j].date_from - datetime.timedelta(days=period)) and entry_list[i].patient.idn != entry_list[j].patient.idn and entry_list[i].location_name == entry_list[j].location_name:
+                    if not (entry_list[i].date_from > entry_list[j].date_to + datetime.timedelta(days=period) \
+                            or entry_list[i].date_to < entry_list[j].date_from - datetime.timedelta(days=period)) \
+                            and entry_list[i].patient.idn != entry_list[j].patient.idn \
+                            and entry_list[i].location_name == entry_list[j].location_name:
                         
                         if no_result:
                             return_dict[counter] = entry_list[i]
@@ -80,21 +84,27 @@ def profile_search(request):
                 counter+=1
             
 
-
+            '''my_list = []
             if loc_name != "":
-                my_list = list(return_dict.items())          
+                #print(loc_name)
+                my_list = list(return_dict.items())
+                print(my_list)       
                 for i in my_list:
+                    #print(i)
                     if i[1] != loc_name:
-                        my_list.remove(i)
-
                         
+                        my_list.remove(i)
+            else:
+                print('No location indicated')'''
+
+            #print(my_list)
 
                 
                 
             if return_dict[next(reversed(return_dict))] == 'done':
                 return_dict.popitem()
 
-            print(return_dict)
+            #print(return_dict)
             return render(request, 'covidapp/query_page.html',{'return_dict':return_dict, 'query_form':query_form})
                 
     else:
@@ -102,3 +112,17 @@ def profile_search(request):
 
     return render(request, 'covidapp/query_page.html',{'query_form':query_form})
 
+class PatientUpdateView(UpdateView):
+    #redirect_field_name = 'trans_19/patient_detail.html'
+    print("YOOO")
+    #fields = ('name',)
+    form_class = PatientForm
+
+    model = Patient
+
+
+
+class PatientDeleteView(DeleteView):
+    print("HELLO")
+    model = Patient
+    success_url = reverse_lazy('index')
