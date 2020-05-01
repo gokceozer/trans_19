@@ -57,15 +57,23 @@
             {% endfor %}
         </table>
 
-  
-    
+        
+        
 
-        <p><a class="btn btn-primary" href="{% url 'patient_edit' pk=patient.pk %}">Edit</a></p>
-        <p><a class="btn btn-primary" href="{% url 'patient_remove' pk=patient.pk %}">Delete</a></p>
+        <p><a class="btn btn-primary" href="{% url 'patient_edit' pk=patient.pk %}">Edit Patient Information</a></p>
+        <p><a class="btn btn-primary" href="{% url 'patient_remove' pk=patient.pk %}">Delete Patient</a></p>
         
 
     </div>
 </div>
+
+
+<form method="POST" class="post-form">
+    {% csrf_token %}
+    {{ PatientForm.as_p }}
+    <button type="submit" class="save btn btn-default">Save</button>
+</form>
+
 
     
 

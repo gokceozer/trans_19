@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from covidapp.forms import PatientForm, QueryForm, LocationForm #LocationFormSet
+from covidapp.forms import PatientForm, QueryForm, LocationForm, PastLocationForm #LocationFormSet
 from covidapp.models import Patient, Location
 from django.views.generic import DetailView, ListView, FormView, UpdateView, DeleteView
 from . import forms
@@ -17,27 +17,19 @@ def index(request):
 
 def patient_new(request):
     patientForm = PatientForm()
-    #formset = LocationFormSet()
     if request.method == "POST":
         patientForm = PatientForm(request.POST)
-        #formset = LocationFormSet(request.POST) 
         if patientForm.is_valid(): #and formset.is_valid():
             patientForm.save(commit=True)
-            '''patient = patientForm.save(commit=True)
-            for form in formset:
-                location = form.save(commit=False)
-                location.patient = patient
-                location.save()'''
             return index(request)
         else:
             print('ERROR FORM INVALID')
-#, 'formset':formset
     return render(request, 'covidapp/patient_new.html',{'patientForm':patientForm})
 
 
 def location_new(request):
     locationForm = LocationForm()
-
+    e = PastLocationForm()
     if request.method == "POST":
 
         loc = LocationForm(request.POST) 
@@ -48,12 +40,15 @@ def location_new(request):
         else:
             print('ERROR FORM INVALID')
 
-    return render(request, 'covidapp/location_new.html',{'locationForm':locationForm})
+    return render(request, 'covidapp/location_new.html',{'locationForm':locationForm, 'e':e})
 
 
 
-class PatientDetailView(DetailView):
+class PatientDetailView(DetailView, FormView):
     model=Patient
+    form_class = PastLocationForm
+
+
 
 
 def profile_search(request):
@@ -133,15 +128,11 @@ def profile_search(request):
 
 class PatientUpdateView(UpdateView):
     #redirect_field_name = 'trans_19/patient_detail.html'
-    print("YOOO")
     #fields = ('name',)
     form_class = PatientForm
 
     model = Patient
 
-
-
 class PatientDeleteView(DeleteView):
-    print("HELLO")
     model = Patient
     success_url = reverse_lazy('index')

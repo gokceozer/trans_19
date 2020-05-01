@@ -36,17 +36,8 @@ class LocationForm(forms.ModelForm):
         #exclude = ('patient',)
         fields=['location_name', 'address','district', 'grid_x','grid_y']
 
-'''LocationFormSet = modelformset_factory(
-    Location,
-    form=LocationForm,
-    extra=1,
-    #exclude = ('patient',),
-    fields=('location_name','address','grid_x','grid_y','date_from','date_to','details','category'),
-    widgets = {
-    'date_from': forms.DateInput(format='%d-%m-%Y'),
-    'date_to': forms.DateInput(format='%d-%m-%Y'),
-    },
-)'''
+class PastLocationForm(forms.Form):
+    locations = forms.ModelChoiceField(queryset=Location.objects.all().order_by('location_name'))
 
 
 class QueryForm(forms.Form):
