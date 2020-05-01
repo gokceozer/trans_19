@@ -29,3 +29,15 @@ class Location(models.Model):
 
     def __str__(self):
         return self.location_name
+
+
+class LocationTemplate(models.Model):
+    location_name = models.CharField(max_length=50, null=True, blank=True)
+    address = models.CharField(max_length=300, null=True, blank=True)
+    district = models.CharField(max_length=300, null=True, blank=True)
+    grid_x = models.IntegerField(null=True, blank=True)
+    grid_y = models.IntegerField(null=True, blank=True)
+    
+
+    def __str__(self):
+        return self.location_name + ", Address: " + self.address + ", District: " + self.district + ", Coordinates: (" + str(self.grid_x) + ", " + str(self.grid_y) + ")"

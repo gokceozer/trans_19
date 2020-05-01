@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import modelformset_factory
-from covidapp.models import Patient, Location
+from covidapp.models import Patient, Location, LocationTemplate
 from trans19 import settings
 from crispy_forms.helper import FormHelper
 
@@ -15,29 +15,19 @@ class PatientForm(forms.ModelForm):
         }
 
 class LocationForm(forms.ModelForm):
-    '''date_from = forms.DateField(
-        input_formats=['%d-%m-%Y'],
-        widget=forms.DateInput(
-            attrs={'class': 'date'},
-            format='%d-%m-%Y'
-        )
-    )
-
-    date_to = forms.DateField(
-        input_formats=['%d-%m-%Y'],
-        widget=forms.DateInput(
-            attrs={'class': 'date'},
-            format='%d-%m-%Y'
-        )
-    )'''
     
     class Meta:
-        model = Location
+        model = LocationTemplate
         #exclude = ('patient',)
         fields=['location_name', 'address','district', 'grid_x','grid_y']
 
-class PastLocationForm(forms.Form):
-    locations = forms.ModelChoiceField(queryset=Location.objects.all().order_by('location_name'))
+class PastLocationForm(forms.ModelForm):
+    location = forms.ModelChoiceField(queryset=LocationTemplate.objects.all().order_by('location_name'))
+    class Meta:
+        model = Location
+        #exclude = ('patient',)
+        exclude=['location_name', 'address','district', 'grid_x','grid_y', 'patient']
+
 
 
 class QueryForm(forms.Form):

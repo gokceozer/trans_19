@@ -3,10 +3,11 @@ from covidapp.forms import PatientForm, QueryForm, LocationForm, PastLocationFor
 from covidapp.models import Patient, Location
 from django.views.generic import DetailView, ListView, FormView, UpdateView, DeleteView
 from . import forms
+from django.views.generic.edit import FormMixin
 from django.http import HttpResponseRedirect
 import datetime
 from collections import OrderedDict
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
 # Create your views here.
 def index(request):
@@ -29,7 +30,6 @@ def patient_new(request):
 
 def location_new(request):
     locationForm = LocationForm()
-    e = PastLocationForm()
     if request.method == "POST":
 
         loc = LocationForm(request.POST) 
@@ -40,16 +40,61 @@ def location_new(request):
         else:
             print('ERROR FORM INVALID')
 
-    return render(request, 'covidapp/location_new.html',{'locationForm':locationForm, 'e':e})
+    return render(request, 'covidapp/location_new.html',{'locationForm':locationForm})
 
 
-
-class PatientDetailView(DetailView, FormView):
+class PatientDetailView(DetailView, FormMixin):
     model=Patient
     form_class = PastLocationForm
+    #template_name = 'patient_detail.html'
+
+    def get_success_url(self):
+        return reverse('patient_detail', kwargs={'pk': self.object.pk})
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        self.object = self.get_object()
+        
+        form = self.get_form()
+
+        if form.is_valid():
+            pastLocationDetail = Location()
+
+            setattr(pastLocationDetail,'location_name',str(form.cleaned_data['location']).split(',')[0])
+            setattr(pastLocationDetail,'address',str(form.cleaned_data['location']).split(',')[1].split(', ')[0])
+            setattr(pastLocationDetail,'district',str(form.cleaned_data['location']).split('District: ')[1].split(',')[0])
+            setattr(pastLocationDetail,'grid_x',int(str(form.cleaned_data['location']).split('Coordinates: (')[1].split(', ')[0]))
+            setattr(pastLocationDetail,'grid_y',int(str(form.cleaned_data['location']).split('Coordinates: (')[1].split(', ')[1][:-1]))
+            setattr(pastLocationDetail,'date_from',form.cleaned_data['date_from'])
+            setattr(pastLocationDetail,'date_to',form.cleaned_data['date_to'])
+            setattr(pastLocationDetail,'details',form.cleaned_data['details'])
+            setattr(pastLocationDetail,'category',form.cleaned_data['category'])
+            setattr(pastLocationDetail,'patient', self.object)
 
 
+            pastLocationDetail.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(PatientDetailView, self).get_context_data(**kwargs)
+        context['form'] = self.get_form()#PastLocationForm
+        
+        return context
+
+class MyFormView(FormView):
+    form_class = PastLocationForm
+
+    def form_valid(self, form): 
+        print(form.cleaned_data) 
+        return super().form_valid(form) 
 
 def profile_search(request):
     if request.method == 'POST': 
@@ -127,10 +172,7 @@ def profile_search(request):
     return render(request, 'covidapp/query_page.html',{'query_form':query_form})
 
 class PatientUpdateView(UpdateView):
-    #redirect_field_name = 'trans_19/patient_detail.html'
-    #fields = ('name',)
     form_class = PatientForm
-
     model = Patient
 
 class PatientDeleteView(DeleteView):
