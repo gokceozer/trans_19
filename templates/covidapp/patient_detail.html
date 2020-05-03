@@ -64,9 +64,14 @@
 
         <p><a class="btn btn-primary" href="{% url 'patient_edit' pk=patient.pk %}">Edit Patient Information</a></p>
         <p><a class="btn btn-primary" href="{% url 'patient_remove' pk=patient.pk %}">Delete Patient</a></p>
+        <p><a class="btn btn-primary" href="{% url 'query' pk=patient.pk %}">Query</a></p>
         
 
     </div>
+
+
+
+
 </div>
 
 <div class="container">
@@ -79,6 +84,10 @@
     <button type="submit" class="save btn btn-default">Save</button>
 </form>
 </div>
+
+
+
+
 
 
     

@@ -96,30 +96,28 @@ class MyFormView(FormView):
         print(form.cleaned_data) 
         return super().form_valid(form) 
 
-def profile_search(request):
+def profile_search(request,pk):
     if request.method == 'POST': 
         query_form = QueryForm(request.POST)
         if query_form.is_valid():
             model=Location
+            location = query_form.cleaned_data['location']
             period = query_form.cleaned_data['period']
-            loc_name = query_form.cleaned_data['location']
-            date_f = query_form.cleaned_data['date_from']
-            date_t = query_form.cleaned_data['date_to']
-
+            
+            
             entry_list = list(Location.objects.all())
-            #return_dict = {}
-            return_dict = OrderedDict()
+            return_dict = {}
 
-            counter = 1
+
             #print(len(entry_list))
             for i in range(len(entry_list)):
-                #print(f"i is {i}")
-                
-                no_result = True
-                for j in range(i, len(entry_list)):
-                    '''print(type(entry_list[j].date_to))
+                print(f"i is {entry_list[i].date_from}")
+                print(f"i is {entry_list[i].date_to}")
+                print(f"i is {entry_list[i].location_name}")
+                '''for j in range(i, len(entry_list)):
+                    print(type(entry_list[j].date_to))
                     print(entry_list[i].date_to)
-                    print(entry_list[i].patient.name)'''
+                    print(entry_list[i].patient.name)
                     if not (entry_list[i].date_from > entry_list[j].date_to + datetime.timedelta(days=period) \
                             or entry_list[i].date_to < entry_list[j].date_from - datetime.timedelta(days=period)) \
                             and entry_list[i].patient.idn != entry_list[j].patient.idn \
@@ -127,41 +125,15 @@ def profile_search(request):
                         
                         if no_result:
                             return_dict[counter] = entry_list[i]
-                            counter+=1
+                            
                             return_dict[counter] = entry_list[j]
-                            counter+=1
+                            
                         else:
-                            return_dict[counter] = entry_list[j]
-                            counter+=1
-
-                        no_result = False
-
-                if no_result:
-                    continue
-
-                return_dict[counter] = "done"
-                counter+=1
-            
-
-            '''my_list = []
-            if loc_name != "":
-                #print(loc_name)
-                my_list = list(return_dict.items())
-                print(my_list)       
-                for i in my_list:
-                    #print(i)
-                    if i[1] != loc_name:
-                        
-                        my_list.remove(i)
-            else:
-                print('No location indicated')'''
-
-            #print(my_list)
-
-                
-                
-            if return_dict[next(reversed(return_dict))] == 'done':
-                return_dict.popitem()
+                            return_dict[counter] = entry_list[j]'''
+                            
+        
+            '''if return_dict[next(reversed(return_dict))] == 'done':
+                return_dict.popitem()'''
 
             #print(return_dict)
             return render(request, 'covidapp/query_page.html',{'return_dict':return_dict, 'query_form':query_form})

@@ -22,7 +22,7 @@ class LocationForm(forms.ModelForm):
         fields=['location_name', 'address','district', 'grid_x','grid_y']
 
 class PastLocationForm(forms.ModelForm):
-    location = forms.ModelChoiceField(queryset=LocationTemplate.objects.all().order_by('location_name'))
+    
     class Meta:
         model = Location
         #exclude = ('patient',)
@@ -32,7 +32,6 @@ class PastLocationForm(forms.ModelForm):
 
 class QueryForm(forms.Form):
     period = forms.IntegerField()
-    location = forms.CharField(max_length=100, required = False)
-    date_from = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS, required = False)
-    date_to = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS, required = False)
+    location = forms.ModelChoiceField(queryset=LocationTemplate.objects.all().order_by('location_name'))
+    #location = forms.CharField(max_length=100, required = False)
     
