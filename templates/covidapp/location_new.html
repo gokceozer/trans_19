@@ -1,0 +1,22 @@
+{% extends "covidapp/base.html" %}
+{% block content %}
+<form class="form-horizontal" method="POST">
+    {% csrf_token %}
+    <div class="jumbotron">
+        <div class="row spacer">
+            <div class="col-2">
+                <div class="input-group">
+                    {{ locationForm.as_p }}       
+                </div>
+            </div> 
+        </div> 
+        <div class="row spacer">
+            <div class="col-4 offset-2"></div>
+                <button type="submit" class="btn btn-block btn-primary">Create</button>
+            </div>
+        </div>
+    </div> 
+
+</form>
+
+{% endblock %}

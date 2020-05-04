@@ -6,7 +6,7 @@
 
     <div class="header">
         <h2 class="posttitle loader">Details for patient {{ patient.name }} with identification number {{ patient.idn }}</h2>
-      </div>
+    </div>
     
 
    
@@ -27,14 +27,15 @@
                 <td>{{ patient.case_number }}</td>
             </tr>
         </table>
-    </div>
+    
     
 
-    <div class="shell">
+    
         <table>
             <thead>
                 <th>Location</th>
                 <th>Address</th>
+                <th>District</th>
                 <th>X Coordinate</th>
                 <th>Y Coordinate</th>
                 <th>Date From</th>
@@ -45,8 +46,9 @@
             
             {% for loc in patient.locations.all %}
             <tr>
-                <th>{{ loc.location_name }}</th>
+                <td>{{ loc.location_name }}</td>
                 <td>{{ loc.address }}</td>
+                <td>{{ loc.district }}</td>
                 <td>{{ loc.grid_x }}</td>
                 <td>{{ loc.grid_y }}</td>
                 <td>{{ loc.date_from }}</td>
@@ -57,12 +59,36 @@
             {% endfor %}
         </table>
 
-  
-    
+        
+        
 
-    <button type="button" style="float: right;">Edit</button>
+        <p><a class="btn btn-primary" href="{% url 'patient_edit' pk=patient.pk %}">Edit Patient Information</a></p>
+        <p><a class="btn btn-primary" href="{% url 'patient_remove' pk=patient.pk %}">Delete Patient</a></p>
+        <p><a class="btn btn-primary" href="{% url 'query' pk=patient.pk %}">Query</a></p>
+        
+
+    </div>
+
+
+
+
 </div>
+
+<div class="container">
+    <div class="header">
+        <h2 class="posttitle loader">Add past locations for the patient</h2>
+    </div>
+<form  method="POST" class="post-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="save btn btn-default">Save</button>
+</form>
 </div>
+
+
+
+
+
 
     
 
