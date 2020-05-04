@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from covidapp.forms import PatientForm, QueryForm, LocationForm, PastLocationForm #LocationFormSet
-from covidapp.models import Patient, Location
+from covidapp.models import Patient, Location, LocationTemplate
 from django.views.generic import DetailView, ListView, FormView, UpdateView, DeleteView
 from . import forms
 from django.views.generic.edit import FormMixin
@@ -41,7 +41,6 @@ def location_new(request):
             print('ERROR FORM INVALID')
 
     return render(request, 'covidapp/location_new.html',{'locationForm':locationForm})
-
 
 class PatientDetailView(DetailView, FormMixin):
     model=Patient
@@ -148,5 +147,61 @@ class PatientUpdateView(UpdateView):
     model = Patient
 
 class PatientDeleteView(DeleteView):
+
     model = Patient
     success_url = reverse_lazy('index')
+
+class LocationView(ListView):
+    model = LocationTemplate
+
+def location_temps(request):
+    locations = LocationTemplate.objects.all()
+    my_dict = {'locations':locations}
+    return render(request, 'covidapp/location_list.html',context=my_dict)
+
+class LocationDetailView(DetailView):
+    model = LocationTemplate
+    template_name = 'covidapp/location_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #context['now'] = timezone.now()
+        return context
+
+    def get_success_url(self):
+        return reverse('location_detail', kwargs={'pk': self.object.pk})
+
+
+class LocationUpdateView(UpdateView):
+    form_class = LocationForm
+    model = LocationTemplate
+    #template_name = 'locationTemplate_update_form'
+
+
+class LocationDeleteView(DeleteView):
+
+    model = LocationTemplate
+    success_url = reverse_lazy('location_list')
+
+    def post(self, request, *args, **kwargs):
+
+        self.object = self.get_object()
+        
+        for loc in Location.objects.all():
+            if self.object.location_name == loc.location_name:
+                loc.delete()
+        
+
+
+        return self.delete(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(LocationDeleteView, self).get_context_data(**kwargs)
+        
+        
+        return context

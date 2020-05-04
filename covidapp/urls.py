@@ -8,11 +8,13 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('patient_new/', views.patient_new, name='patient_new'),
     path('location_new/', views.location_new, name='location_new'),
+    path('location_list/', views.location_temps, name='location_list'),
     re_path('patient/(?P<pk>\d+)$', views.PatientDetailView.as_view(), name='patient_detail'),
-    #path('query/', views.profile_search, name='query'),
-    #url(r'^patient/(?P<pk>\d+)/remove/$', views.PatientDeleteView.as_view(), name='patient_remove'),
+    re_path('location/(?P<pk>\d+)$', views.LocationDetailView.as_view(), name='location_detail'),
     re_path('patient/(?P<pk>\d+)/edit/$', views.PatientUpdateView.as_view(), name='patient_edit'),
     re_path('my_form/$', require_POST(views.MyFormView.as_view()), name='my_form_view_url'),
     re_path('patient/(?P<pk>\d+)/remove/$', views.PatientDeleteView.as_view(), name='patient_remove'),
-    re_path('patient/(?P<pk>\d+)/query/$', views.profile_search, name='query')
+    re_path('patient/(?P<pk>\d+)/query/$', views.profile_search, name='query'),
+    re_path('location/(?P<pk>\d+)/edit/$', views.LocationUpdateView.as_view(), name='location_edit'),
+    re_path('location/(?P<pk>\d+)/remove/$', views.LocationDeleteView.as_view(), name='location_remove'),
 ]
