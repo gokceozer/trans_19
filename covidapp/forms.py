@@ -22,7 +22,7 @@ class LocationForm(forms.ModelForm):
         fields=['location_name', 'address','district', 'grid_x','grid_y']
 
 class PastLocationForm(forms.ModelForm):
-    
+    location = forms.ModelChoiceField(queryset=LocationTemplate.objects.all().order_by('location_name'))
     class Meta:
         model = Location
         #exclude = ('patient',)
