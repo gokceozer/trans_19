@@ -106,13 +106,24 @@ class QueryView(FormView):
 
 
 def profile_search(request,pk):
+    items = Location.objects.filter(patient=pk)
     if request.method == 'POST':
-        query_form = QueryForm(request.POST)
+        query_form = QueryForm(request.POST, items=items)
         if query_form.is_valid():
             model=Location
             
             location = query_form.cleaned_data['location']
-            location_str = str(location).split(',')[0]
+            location_str = str(location).split(' Date')[0]
+            
+            idx1 = str(location).find('Date From: ')
+            idx2 = str(location).find(' Date To: ')
+            date_from = str(location)[idx1+11:idx2]
+            idx1 = str(location).find('Date To: ')
+            date_to = str(location)[idx1+9:]
+
+            date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
+            date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+
             period = query_form.cleaned_data['period']
             
             
@@ -122,39 +133,25 @@ def profile_search(request,pk):
 
             #print(len(entry_list))
             for i in range(len(entry_list)):
-                #print(f"i is {entry_list[i].date_from}")
-                #print(f"i is {entry_list[i].date_to}")
-                #print(f"i is {entry_list[i].location_name}")
-                if location_str == entry_list[i].location_name and location.patient.idn != entry_list[i].patient.idn:
+                
+                print(f"i is {entry_list[i].date_from}")
+                print(f"i is {entry_list[i].date_to}")
+                print(f"i is {entry_list[i].location_name}")
+                if location_str == entry_list[i].location_name and location.patient.idn != entry_list[i].patient.idn \
+                    and not (date_from.date() > entry_list[i].date_to + datetime.timedelta(days=period) \
+                    or date_to.date() < entry_list[i].date_from - datetime.timedelta(days=period)):
 
-                    print('match')
-                '''for j in range(i, len(entry_list)):
-                    print(type(entry_list[j].date_to))
-                    print(entry_list[i].date_to)
-                    print(entry_list[i].patient.name)
-                    if not (entry_list[i].date_from > entry_list[j].date_to + datetime.timedelta(days=period) \
-                            or entry_list[i].date_to < entry_list[j].date_from - datetime.timedelta(days=period)) \
-                            and entry_list[i].patient.idn != entry_list[j].patient.idn \
-                            and entry_list[i].location_name == entry_list[j].location_name:
                         
-                        if no_result:
-                            return_dict[counter] = entry_list[i]
+                    return_dict[i] = entry_list[i]
+                        
                             
-                            return_dict[counter] = entry_list[j]
-                            
-                        else:
-                            return_dict[counter] = entry_list[j]'''
-                            
-        
-            '''if return_dict[next(reversed(return_dict))] == 'done':
-                return_dict.popitem()'''
+
 
             #print(return_dict)
             return render(request, 'covidapp/query_page.html',{'return_dict':return_dict, 'query_form':query_form})
     else:
-        #item = Location.objects.filter(pk=self.object.pk)
-        query_form = QueryForm()
-        #get(pk=pk)
+        
+        query_form = QueryForm(items=items)
     return render(request, 'covidapp/query_page.html',{'query_form':query_form})
 
 
