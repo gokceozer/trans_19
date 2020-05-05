@@ -95,12 +95,24 @@ class MyFormView(FormView):
         print(form.cleaned_data) 
         return super().form_valid(form) 
 
+class QueryView(FormView):
+    form_class = QueryForm
+    template_name = 'query_page.html'
+    
+
+    def form_valid(self, form): 
+        print(form.cleaned_data) 
+        return super().form_valid(form)
+
+
 def profile_search(request,pk):
-    if request.method == 'POST': 
+    if request.method == 'POST':
         query_form = QueryForm(request.POST)
         if query_form.is_valid():
             model=Location
+            
             location = query_form.cleaned_data['location']
+            location_str = str(location).split(',')[0]
             period = query_form.cleaned_data['period']
             
             
@@ -110,9 +122,12 @@ def profile_search(request,pk):
 
             #print(len(entry_list))
             for i in range(len(entry_list)):
-                print(f"i is {entry_list[i].date_from}")
-                print(f"i is {entry_list[i].date_to}")
-                print(f"i is {entry_list[i].location_name}")
+                #print(f"i is {entry_list[i].date_from}")
+                #print(f"i is {entry_list[i].date_to}")
+                #print(f"i is {entry_list[i].location_name}")
+                if location_str == entry_list[i].location_name and location.patient.idn != entry_list[i].patient.idn:
+
+                    print('match')
                 '''for j in range(i, len(entry_list)):
                     print(type(entry_list[j].date_to))
                     print(entry_list[i].date_to)
@@ -136,11 +151,13 @@ def profile_search(request,pk):
 
             #print(return_dict)
             return render(request, 'covidapp/query_page.html',{'return_dict':return_dict, 'query_form':query_form})
-                
     else:
+        #item = Location.objects.filter(pk=self.object.pk)
         query_form = QueryForm()
-
+        #get(pk=pk)
     return render(request, 'covidapp/query_page.html',{'query_form':query_form})
+
+
 
 class PatientUpdateView(UpdateView):
     form_class = PatientForm
@@ -173,9 +190,34 @@ class LocationDetailView(DetailView):
 
 
 class LocationUpdateView(UpdateView):
-    form_class = LocationForm
+    #form_class = LocationForm
     model = LocationTemplate
+    fields = ['address','district','grid_x','grid_y']
     #template_name = 'locationTemplate_update_form'
+
+    def get_success_url(self):
+        return reverse('location_detail', kwargs={'pk': self.object.pk})
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            
+            for loc in Location.objects.all():
+                if self.object.location_name == loc.location_name:
+                    
+                    setattr(loc,'address',(form.cleaned_data['address']))
+                    setattr(loc,'district',(form.cleaned_data['district']))
+                    setattr(loc,'grid_x',(form.cleaned_data['grid_x']))
+                    setattr(loc,'grid_y',(form.cleaned_data['grid_y']))
+                    
+                    loc.save()
+
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    
 
 
 class LocationDeleteView(DeleteView):

@@ -30,5 +30,5 @@ class PastLocationForm(forms.ModelForm):
 
 class QueryForm(forms.Form):
     period = forms.IntegerField()
-    location = forms.ModelChoiceField(queryset=LocationTemplate.objects.all().order_by('location_name'))
-    #location = forms.CharField(max_length=100, required = False)
+    location = forms.ModelChoiceField(queryset=Location.objects.all().order_by('location_name'))
+    #location = forms.CharField(max_length=100, required = False) 

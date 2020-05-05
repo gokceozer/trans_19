@@ -15,6 +15,7 @@ urlpatterns = [
     re_path('my_form/$', require_POST(views.MyFormView.as_view()), name='my_form_view_url'),
     re_path('patient/(?P<pk>\d+)/remove/$', views.PatientDeleteView.as_view(), name='patient_remove'),
     re_path('patient/(?P<pk>\d+)/query/$', views.profile_search, name='query'),
+    #re_path('patient/(?P<pk>\d+)/query/$', views.QueryView.as_view(), name='query'),
     re_path('location/(?P<pk>\d+)/edit/$', views.LocationUpdateView.as_view(), name='location_edit'),
     re_path('location/(?P<pk>\d+)/remove/$', views.LocationDeleteView.as_view(), name='location_remove'),
 ]
