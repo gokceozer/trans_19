@@ -46,7 +46,7 @@
             
             {% for loc in patient.locations.all %}
             <tr>
-                <td>{{ loc.location_name }}</td>
+                <td><a href="{% url 'plocation_detail' pk=loc.pk %}">{{ loc.location_name }}</a></td>
                 <td>{{ loc.address }}</td>
                 <td>{{ loc.district }}</td>
                 <td>{{ loc.grid_x }}</td>

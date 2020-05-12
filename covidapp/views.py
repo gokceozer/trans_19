@@ -108,50 +108,88 @@ class QueryView(FormView):
 def profile_search(request,pk):
     items = Location.objects.filter(patient=pk)
     if request.method == 'POST':
-        query_form = QueryForm(request.POST, items=items)
+        query_form = QueryForm(request.POST)
         if query_form.is_valid():
             model=Location
             
-            location = query_form.cleaned_data['location']
-            location_str = str(location).split(' Date')[0]
+            #location = query_form.cleaned_data['location']
             
-            idx1 = str(location).find('Date From: ')
-            idx2 = str(location).find(' Date To: ')
-            date_from = str(location)[idx1+11:idx2]
-            idx1 = str(location).find('Date To: ')
-            date_to = str(location)[idx1+9:]
-
-            date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
-            date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
 
             period = query_form.cleaned_data['period']
             
             
             entry_list = list(Location.objects.all())
             return_dict = {}
+            patient = Patient.objects.filter(pk=pk)[0]
 
+            patient_info = str(patient).split(':')
+            patient_name = patient_info[0]
+            patient_confirm_date = patient_info[2]
+            patient_case_number = patient_info[1]
 
-            #print(len(entry_list))
-            for i in range(len(entry_list)):
+            print(patient_info)
+            print(patient_confirm_date)
+            print(patient_case_number)
+            patient_dict = {}
+            patient_dict['patient_case_number'] = patient_case_number
+            patient_dict['name'] = patient_name
+            patient_dict['patient_confirm_date'] = patient_confirm_date
+            
+
+            #print(patient)
+            #return_dict[-1] = 
+
+            for location in items:
+
+                location_str = str(location).split(' Date')[0]
+            
+                idx1 = str(location).find('Date From: ')
+                idx2 = str(location).find(' Date To: ')
+                date_from = str(location)[idx1+11:idx2]
+                idx1 = str(location).find('Date To: ')
+                date_to = str(location)[idx1+9:]
+
+                date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
+                date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
                 
-                print(f"i is {entry_list[i].date_from}")
-                print(f"i is {entry_list[i].date_to}")
-                print(f"i is {entry_list[i].location_name}")
-                if location_str == entry_list[i].location_name and location.patient.idn != entry_list[i].patient.idn \
-                    and not (date_from.date() > entry_list[i].date_to + datetime.timedelta(days=period) \
-                    or date_to.date() < entry_list[i].date_from - datetime.timedelta(days=period)):
+                #print(location_str)
+                #print(date_from)
+                #print(date_to)
+                
 
-                        
-                    return_dict[i] = entry_list[i]
+                for i in range(len(entry_list)):
+                    
+                    #print(f"i is {entry_list[i].date_from}")
+                    #print(f"i is {entry_list[i].date_to}")
+                    #print(f"i is {entry_list[i].location_name}")
+                    if location_str == entry_list[i].location_name and location.patient.idn != entry_list[i].patient.idn \
+                        and not (date_from.date() > entry_list[i].date_to + datetime.timedelta(days=period) \
+                        or date_to.date() < entry_list[i].date_from - datetime.timedelta(days=period)):
+                        data_dict = {}
+                        if date_from.date() <= entry_list[i].date_to + datetime.timedelta(days=period):
+
+                            
+                            data_dict["patient_date"] = str(date_from.date())
+                            data_dict["visitor_date"] = str(entry_list[i].date_to)
+
+                        elif date_to.date() < entry_list[i].date_from - datetime.timedelta(days=period):
+
+                            data_dict["patient_date"] = str(date_to.date())
+                            data_dict["visitor_date"] = str(entry_list[i].date_from)
+
+                        data_dict["patient_detail"] = location.details
+                        data_dict["entry_instance"] = entry_list[i]
+                        print(data_dict)
+                        return_dict[i] = data_dict
                         
                             
 
 
-            #print(return_dict)
-            return render(request, 'covidapp/query_page.html',{'return_dict':return_dict, 'query_form':query_form})
+            print(return_dict)
+            return render(request, 'covidapp/query_page.html',{'return_dict':return_dict, 'query_form':query_form, 'patient_dict':patient_dict})
     else:
         
-        query_form = QueryForm(items=items)
+        query_form = QueryForm()
     return render(request, 'covidapp/query_page.html',{'query_form':query_form})
 
 
@@ -244,3 +282,22 @@ class LocationDeleteView(DeleteView):
         
         
         return context
+
+class PLocationDetailView(DetailView):
+    model = Location
+    template_name = 'covidapp/plocation_detail.html'
+
+class PLocationUpdateView(UpdateView):
+    model = Location
+    #form_class = PastLocationForm
+    fields = ['date_from', 'date_to','details','category']
+
+
+
+class PLocationDeleteView(DeleteView):
+    model = Location
+    #success_url = reverse('plocation_detail', kwargs={'pk': self.object.pk})
+
+    def get_success_url(self):
+        return reverse('index')
+        #return reverse('plocation_detail', kwargs={'pk': self.object.pk})

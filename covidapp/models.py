@@ -15,7 +15,7 @@ class Patient(models.Model):
     
 
     def __str__(self):
-        return self.name
+        return self.name + ":" + str(self.case_number) + ":" + str(self.date_of_confirm)
 
 class Location(models.Model):
     patient = models.ForeignKey(Patient, related_name='locations', on_delete=models.CASCADE, null=True, blank=True)
@@ -30,7 +30,7 @@ class Location(models.Model):
     category = models.CharField(max_length=300, null=True, blank=True)
 
     def __str__(self):
-        return self.location_name + ' Date From: ' + str(self.date_from) + ' Date To: ' + str(self.date_to) 
+        return str(self.location_name) + ' Date From: ' + str(self.date_from) + ' Date To: ' + str(self.date_to) 
 
 
 class LocationTemplate(models.Model):
