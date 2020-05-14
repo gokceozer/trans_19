@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>CHP</title>
+
+        <!-- Bootstrap -->
+        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static "css/mystyle.css" %}"/>
+        
+        
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <ul class="nav navbar-nav flex-row">
+                    <li><a class="navbar-brand bigbrand" href="{% url 'index' %}">Patients</a></li>
+                    <li><a class="navbar-brand bigbrand" href="{% url 'location_list' %}">Locations</a></li>
+                    <li><a class="navbar-brand bigbrand" href="{% url 'admin:index' %}">Admin</a></li>
+                    <li><a class="navbar-brand bigbrand" href="{% url 'patient_new' %}">Enter Record</a></li>
+                    <li><a class="navbar-brand bigbrand" href="{% url 'location_new' %}">Enter Location</a></li>
+                    <li><a class="navbar-brand bigbrand" href="{% url 'password_change' %}">Change Password</a></li>
+                    <li><a class="navbar-brand bigbrand" href="{% url 'logout' %}">logout</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        {% block content %}
+        {% endblock %}
+
+    </head>
+</html>
