@@ -1,8 +1,9 @@
 {% extends "covidapp/base.html" %}
 {% block content %}
 {% load static %}
+{% load has_group %}
 
-
+{% if request.user|has_group:"Epidemiologists" %}
 <form class="form-horizontal" method="POST">
     {% csrf_token %}
     <div class="jumbotron">
@@ -19,11 +20,6 @@
         </div>   
     </div>
 </form>
-
-
-
-
-
 <table>
     
     {% if return_dict %}
@@ -68,5 +64,8 @@
     {% endif %}
 
 </table>
-
+{%else%}
+    <h4>This page is restricted for Epidemiologists</h4>
+    <h4>Authorization is required. Please inquire CHP admin</h4>
+{% endif %}
 {% endblock %}
