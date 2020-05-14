@@ -68,6 +68,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+        'libraries':{
+            'has_group': 'covidapp.templatetags.has_group',
+
+            },
         },
     },
 ]
@@ -128,3 +132,4 @@ STATICFILES_DIRS = [
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+LOGIN_REDIRECT_URL = '/covidapp/index/'
