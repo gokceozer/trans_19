@@ -60,3 +60,26 @@ class QueryForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         #self.fields['location'].queryset = items.order_by('location_name')
+
+
+class LocationForm(forms.ModelForm):
+    date_from = forms.DateField(
+        input_formats=['%d-%m-%Y'],
+        widget=forms.DateInput(
+            attrs={'class': 'date'},
+            format='%d-%m-%Y'
+        )
+    )
+
+    date_to = forms.DateField(
+        input_formats=['%d-%m-%Y'],
+        widget=forms.DateInput(
+            attrs={'class': 'date'},
+            format='%d-%m-%Y'
+        )
+    )
+
+    class Meta:
+        model = Location
+        fields = '__all__'
+        #exclude = ('patient',)

@@ -19,6 +19,7 @@ urlpatterns = [
     re_path('location/(?P<pk>\d+)/edit/$', views.LocationUpdateView.as_view(), name='location_edit'),
     re_path('location/(?P<pk>\d+)/remove/$', views.LocationDeleteView.as_view(), name='location_remove'),
     re_path('location/(?P<pk>\d+)/plocation/$', views.PLocationDetailView.as_view(), name='plocation_detail'),
-    re_path('location/(?P<pk>\d+)/editPL/$', views.PLocationUpdateView.as_view(), name='plocation_edit'),
+    #re_path('location/(?P<pk>\d+)/editPL/$', views.PLocationUpdateView.as_view(), name='plocation_edit'),
+    path('location/<int:id>/editPL/',views.PLocationUpdateView.as_view(), name='plocation_edit'),
     re_path('location/(?P<pk>\d+)/removePL/$', views.PLocationDeleteView.as_view(), name='plocation_remove'),
 ]

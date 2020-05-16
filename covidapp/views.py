@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from covidapp.forms import PatientForm, QueryForm, LocationForm, PastLocationForm #LocationFormSet
 from covidapp.models import Patient, Location, LocationTemplate
 from django.views.generic import DetailView, ListView, FormView, UpdateView, DeleteView
@@ -288,9 +288,25 @@ class PLocationDetailView(DetailView):
     template_name = 'covidapp/plocation_detail.html'
 
 class PLocationUpdateView(UpdateView):
-    model = Location
+    template_name = 'covidapp/plocation_update.html'
+    form_class = LocationForm
+    queryset = Location.objects.all()
+
+    def get_object(self):
+        id_=self.kwargs["id"]
+        return get_object_or_404(Location, id=id_)
+
+    def form_valid(self,form):
+        print(form.cleaned_data)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('plocation_detail', kwargs={'pk': self.object.pk})
+
+
+    #model = Location
     #form_class = PastLocationForm
-    fields = ['date_from', 'date_to','details','category']
+    #fields = ['date_from', 'date_to','details','category']
 
 
 

@@ -1,0 +1,15 @@
+{% extends "covidapp/base.html" %}
+{% block content %}
+
+<body>
+<div style="margin-left: 5%; margin-top: 5%">
+    <form action='' method='POST'>{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save">
+    </form>
+
+
+</div>
+
+</body>
+{% endblock %}
