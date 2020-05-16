@@ -1,8 +1,8 @@
 {% extends "covidapp/base.html" %}
 {% block content %}
 {% load static %}
-
-
+{% load has_group %}
+{% if request.user|has_group:"Epidemiologists" %}
 <form class="form-horizontal" method="POST">
     {% csrf_token %}
     <div class="jumbotron">
@@ -24,49 +24,60 @@
 
 
 
-<table>
+
     
     {% if return_dict %}
+    <div class="container">
+        <table>
+            <thead>
+                <th>Patient Case Number</th>
+                <th>Patient Name</th>
+                <th>Date Case Confirmed</th>
+            </thead>
 
+            <tr>
+                {% for key, info in patient_dict.items %}
+                <td>{{ info }}</td>
+                {% endfor %}
+            </tr>
+           
+        </table>
+    </div>
+
+
+    <table>
         <thead>
+            <th>Patient Case Number</th>
             <th>Patient Name</th>
             <th>Patient ID Number</th>
-            <th>Location Name</th>
-            <th>Date From</th>
-            <th>Date To</th>
+            <th>Date Visited by this Patient </th>
+            <th>Detail</th>
+            <th>Date Visited by Selected Patient </th>
+            <th>Detail</th>
         </thead>
 
         {% for key, location in return_dict.items %}
             
-            {% ifequal location  "done" %}
-                
-                <thead>
-                    <th>Patient Name</th>
-                    <th>Patient ID Number</th>
-                    <th>Location Name</th>
-                    <th>Date From</th>
-                    <th>Date To</th>
-                </thead>
-        
-            {% else %}
 
-                <tr>
-                    <td>{{ location.patient.name }}</td>
-                    <td>{{ location.patient.idn }}</td>
-                    <td>{{ location.location_name }}</td>
-                    <td>{{ location.date_from }}</td>
-                    <td>{{ location.date_to }}</td>
-                </tr>
+            <tr>
+                <td>{{ location.entry_instance.patient.case_number }}</td>
+                <td>{{ location.entry_instance.patient.name }}</td>
+                <td>{{ location.entry_instance.patient.idn }}</td>
+                <td>{{ location.visitor_date }}</td>
+                <td>{{ location.entry_instance.details }}</td>
+                <td>{{ location.patient_date }}</td>
+                <td>{{ location.patient_detail }}</td>
+            </tr>
 
-            {% endifequal %}
 
 
         {% endfor %}
-
+    </table>
     {% else %}
             <h3>No matching result</h3>
     {% endif %}
-
-</table>
-
+{% else %}
+    <h4>This page is restricted for Epidemiologists</h4>
+    <h4>Authorization is required. Please inquire CHP admin</h4>
+{% endif %}
 {% endblock %}

@@ -1,6 +1,7 @@
 {% extends "covidapp/base.html" %}
 {% block content %}
-
+{% load has_group %}
+{% if request.user|has_group:"Epidemiologists" or request.user|has_group:"Staff" %}
 <div class="jumbotron">
     <div class="container">
 
@@ -46,7 +47,7 @@
             
             {% for loc in patient.locations.all %}
             <tr>
-                <td>{{ loc.location_name }}</td>
+                <td><a href="{% url 'plocation_detail' pk=loc.pk %}">{{ loc.location_name }}</a></td>
                 <td>{{ loc.address }}</td>
                 <td>{{ loc.district }}</td>
                 <td>{{ loc.grid_x }}</td>
@@ -89,7 +90,7 @@
 
 
 
-
-    
-
+{% else %}
+<h3>Please Login First</h3>
+{% endif %}
 {% endblock %}

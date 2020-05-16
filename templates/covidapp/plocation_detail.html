@@ -1,0 +1,48 @@
+{% extends "covidapp/base.html" %}
+{% block content %}
+{% load has_group %}
+{% if request.user|has_group:"Epidemiologists" or request.user|has_group:"Staff" %}
+<div class="jumbotron">
+    <div class="container">
+
+    <div class="header">
+        <h2 class="posttitle loader">Details for locationTemplate {{ object.location_name }}</h2>
+    </div>
+    
+
+   
+        <table>
+            <thead>
+                <th>Location Name</th>
+                <th>Address</th>
+                <th>District</th>
+                <th>X coordiante</th>
+                <th>Y coordinate</th>
+            </thead>
+        
+            <tr>
+                <th>{{ object.location_name }}</th>
+                <td>{{ object.address }}</td>
+                <td>{{ object.district }}</td>
+                <td>{{ object.grid_x }}</td>
+                <td>{{ object.grid_y }}</td>
+            </tr>
+        </table>
+    
+        <p><a class="btn btn-primary" href="{% url 'plocation_edit' location.pk %}">Edit Location Information</a></p>
+        <p><a class="btn btn-primary" href="{% url 'plocation_remove' pk=object.pk %}">Delete Location</a></p>
+    
+
+        
+
+    </div>
+
+
+
+
+</div>
+
+{% else %}
+<h3>Please Login First</h3>
+{% endif %}
+{% endblock %}

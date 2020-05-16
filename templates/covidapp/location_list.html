@@ -1,0 +1,37 @@
+{% extends "covidapp/base.html" %}
+{% block content %}
+{% load has_group %}
+{% if request.user|has_group:"Epidemiologists" or request.user|has_group:"Staff" %}
+<div class="jumbotron">
+        
+    {% if locations %}
+    <h1>Location List:</h1>
+    <table>
+        <thead>
+            <th>Location Name</th>
+            <th>Address</th>
+            <th>District</th>
+            <th>X Coordinate</th>
+            <th>Y Coordinate</th>
+        </thead>
+    
+
+    {% for loc in locations %}
+    <tr>
+        <td><a href="{% url 'location_detail' pk=loc.pk %}">{{ loc.location_name }}</a></td>
+        <td>{{ loc.address }}</td>
+        <td>{{ loc.district }}</td>
+        <td>{{ loc.grid_x }}</td>
+        <td>{{ loc.grid_y }}</td>
+    </tr>
+    {% endfor %}
+
+    </table>
+    {% else %}
+        <p>NO LOCATION RECORDS FOUND!</p>
+    {% endif %}
+</div>
+{% else %}
+<h3>Please Login First</h3>
+{% endif %}
+{% endblock %}

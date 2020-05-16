@@ -1,5 +1,7 @@
 {% extends "covidapp/base.html" %}
 {% block content %}
+{% load has_group %}
+{% if request.user|has_group:"Epidemiologists" or request.user|has_group:"Staff" %}
 <form class="form-horizontal" method="POST">
     {% csrf_token %}
     <div class="jumbotron">
@@ -18,5 +20,7 @@
     </div> 
 
 </form>
-
+{% else %}
+<h3>Please Login First</h3>
+{% endif %}
 {% endblock %}

@@ -15,10 +15,12 @@
             <div class="container">
                 <ul class="nav navbar-nav flex-row">
                     <li><a class="navbar-brand bigbrand" href="{% url 'index' %}">Patients</a></li>
+                    <li><a class="navbar-brand bigbrand" href="{% url 'location_list' %}">Locations</a></li>
                     <li><a class="navbar-brand bigbrand" href="{% url 'admin:index' %}">Admin</a></li>
                     <li><a class="navbar-brand bigbrand" href="{% url 'patient_new' %}">Enter Record</a></li>
                     <li><a class="navbar-brand bigbrand" href="{% url 'location_new' %}">Enter Location</a></li>
-                    <li><a class="navbar-brand bigbrand" href="#">Change Password</a></li>
+                    <li><a class="navbar-brand bigbrand" href="{% url 'password_change' %}">Change Password</a></li>
+                    <li><a class="navbar-brand bigbrand" href="{% url 'logout' %}">Logout</a></li>
                 </ul>
             </div>
         </nav>

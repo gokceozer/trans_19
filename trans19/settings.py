@@ -68,6 +68,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries':{
+                'has_group': 'covidapp.templatetags.has_group',
+            }
         },
     },
 ]
@@ -128,3 +131,12 @@ STATICFILES_DIRS = [
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+LOGIN_REDIRECT_URL = '/covidapp/index/'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'grouph2020comp3297@gmail.com'
+EMAIL_HOST_PASSWORD = 'TyPer2020'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = EMAIL_HOST_USER
