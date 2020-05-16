@@ -1,9 +1,12 @@
 {% extends "covidapp/base.html" %}
 {% block content %}
-
+{% load has_group %}
+{% if request.user|has_group:"Epidemiologists" or request.user|has_group:"Staff" %}
 <form method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Update">
 </form>
-
+{% else %}
+<h3>Please Login First</h3>
+{% endif %}
 {% endblock %}

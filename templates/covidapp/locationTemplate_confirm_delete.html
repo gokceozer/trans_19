@@ -1,8 +1,12 @@
 {% extends "covidapp/base.html" %}
 {% block content %}
+{% load has_group %}
+{% if request.user|has_group:"Epidemiologists" or request.user|has_group:"Staff" %}
 <form action="" method="post">{% csrf_token %}
     <p>Are you sure you want to delete "{{ object }}"?</p>
     <input class='btn btn-danger' type="submit" value="Confirm" />
   </form>
-
+{% else %}
+<h3>Please Login First</h3>
+{% endif %}
 {% endblock %}

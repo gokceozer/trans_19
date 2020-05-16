@@ -1,5 +1,7 @@
 {% extends "covidapp/base.html" %}
 {% block content %}
+{% load has_group %}
+{% if request.user|has_group:"Epidemiologists" or request.user|has_group:"Staff" %}
     <h1>Edit</h1>
 
     <form method="POST" class="post-form">
@@ -9,5 +11,7 @@
     </form>
 
     <script>var editor = new MediumEditor('.editable');</script>
-
+{% else %}
+<h3>Please Login First</h3>
+{% endif %}
 {% endblock %}
