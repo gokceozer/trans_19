@@ -5,7 +5,7 @@ from django.conf.urls import url
 from django.views.decorators.http import require_POST
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('index/', views.index, name='index'),
     path('patient_new/', views.patient_new, name='patient_new'),
     path('location_new/', views.location_new, name='location_new'),
     path('location_list/', views.location_temps, name='location_list'),
